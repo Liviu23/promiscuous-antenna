@@ -87,8 +87,13 @@ target_sources(${MAIN_LIBRARY_NAME}
         src/EntityKinds.cpp
         src/Errors.cpp
         src/Footprint.cpp
+        src/Glyph.cpp
+        src/LayerProfile.cpp
+        src/Legend.cpp
+        src/LegendJson.cpp
         src/MapTypes.cpp
         src/TorusGeometry.cpp
+        src/Viewport.cpp
         src/WorldMap.cpp
         src/WorldMapJson.cpp
         src/internal/JsonFile.cpp
