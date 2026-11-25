@@ -82,6 +82,9 @@ target_sources(${MAIN_LIBRARY_NAME}
     PRIVATE
         src/Example.cpp
         src/internal/Detail.cpp
+        src/Coord.cpp
+        src/Errors.cpp
+        src/MapTypes.cpp
 )
 
 # NOTE: Add all defined targets (e.g. executables, libraries, etc. )
