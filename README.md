@@ -1,54 +1,43 @@
-# Nu primesc notă pentru că nu am pus titlu și descriere
+# Promiscuous Antenna
 
-### Folosiți template-ul corespunzător grupei voastre!
-
-| Laborant  | Link template                                |
-|-----------|----------------------------------------------|
-| Dragoș B  | https://github.com/Ionnier/oop-template      |
-| Tiberiu M | https://github.com/MaximTiberiu/oop-template |
-| Marius MC | https://github.com/mcmarius/oop-template     |
-
-### Important!
-
-Aveți voie cu agenți care generează cod doar dacă păstrați AGENTS.md și de `.internal/` *pe toată durata semestrului*.
-Știm că se poate trișa foarte ușor. Ideea nu este să învățați să trișați mai bine, ci să înțelegeți ce faceți.
-Codul generat pus "ca să fie"/pe care nu îl înțelegeți nu se punctează.
-
-Codul din proiect trebuie să poată fi ușor de înțeles și de modificat de către altcineva. Pentru detalii, veniți la ore.
-
-O cerință nu se consideră îndeplinită dacă este realizată doar prin cod generat.
-
-- **Fără cod de umplutură/fără sens!**
-- **Fără copy-paste!**
-- **Fără variabile globale!**
-- **Fără atribute publice!**
-- **Fără date în cod!** Datele vor fi citite din fișier, rețea sau bază de date, aveți exemple destule.
-- **Obligatoriu** fișiere cu date mai multe din care să citiți, obligatoriu cu biblioteci externe: fișiere (local sau server) sau baze de date
-- obligatoriu (TBD) să integrați cel puțin două biblioteci externe pe lângă cele pentru stocare
-
-**NOU!** Livrabile pentru toate temele:
-- aplicație
-- bibliotecă
-- interfața publică pentru bibliotecă
+Simulare pe o hartă tor a unor agenți — în principal iepuri și vulpi — afișată în terminal.
+Agenții comunică prin anunțuri, *broadcasterii* anunță ce nevoi pot satisface
+(hrană, ascunziș, loc liber pentru o plantă nouă), iar *receiverii* ascultă permanent și își aleg
+acțiunea după ponderile propriilor nevoi. Starea se salvează în format JSON.
 
 ### Tema 0
 
-- [ ] Nume proiect (poate fi schimbat ulterior)
-- [ ] Scurtă descriere a temei alese, ce v-ați propus să implementați
+- [X] Nume proiect (poate fi schimbat ulterior)
+- [X] Scurtă descriere a temei alese, ce v-ați propus să implementați
 
 ## Tema 1
 
 #### Cerințe
-- [ ] definirea a minim **3-4 clase** folosind compunere cu clasele definite de voi; moștenirile nu se iau în considerare aici
-- [ ] constructori de inițializare cu parametri pentru fiecare clasă
-- [ ] pentru o aceeași (singură) clasă: constructor de copiere, `operator=` de copiere, destructor
+- [x] definirea a minim **3-4 clase** folosind compunere cu clasele definite de voi; moștenirile nu se iau în considerare aici
+  - [`WorldMap`](include/WorldMap.h) conține un [`TorusGeometry`](include/TorusGeometry.h), un vector de [`Cell`](include/Cell.h) și, pentru fiecare entitate, un [`Footprint`](include/Footprint.h) și un [`Coord`](include/Coord.h)
+  - [`Legend`](include/Legend.h) conține [`Glyph`](include/Glyph.h)-uri și [`LayerProfile`](include/LayerProfile.h)-uri
+  - [`Viewport`](include/Viewport.h) conține un `TorusGeometry`
+  - [`MapConsole`](app/MapConsole.h) conține un [`MapView`](app/MapView.h)
+- [X] constructori de inițializare cu parametri pentru fiecare clasă
+  - ex. `Coord(int x, int y)`, `TorusGeometry(int width, int height)`, `Footprint(std::vector<Coord>)`, `Cell(const LayerCapacity&)`, `WorldMap(const TorusGeometry&, const LayerCapacity&)`, `Glyph(...)`, `LayerProfile(...)`, `Legend(...)`, `Viewport(...)`
+- [x] pentru o aceeași (singură) clasă: constructor de copiere, `operator=` de copiere, destructor
+  - [`WorldMap`](src/WorldMap.cpp): `operator=` prin copy-and-swap; folosite în consolă la `salveaza` (copiere) și `restaureaza` / `importa` (atribuire)
 <!-- - [ ] pentru o altă clasă: constructor de mutare, `operator=` de mutare, destructor -->
 <!-- - [ ] pentru o altă clasă: toate cele 5 funcții membru speciale -->
-- [ ] `operator<<` pentru **toate** clasele pentru afișare (`std::ostream`) folosind compunere de apeluri cu `operator<<`
-- [ ] cât mai multe `const` (unde este cazul) și funcții `private`
-- [ ] implementarea a minim 3 funcții membru publice pentru funcționalități netriviale specifice temei alese, dintre care cel puțin 1-2 funcții mai complexe
-  - nu doar citiri/afișări sau adăugat/șters elemente într-un/dintr-un vector
-- [ ] scenariu de utilizare **cu sens** a claselor definite:
+- [x] `operator<<` pentru **toate** clasele pentru afișare (`std::ostream`) folosind compunere de apeluri cu `operator<<`
+  - toate clasele din `include/`
+  - lipsesc: `MapView` și `MapConsole` din `app/`, dar au modul propriu de afișare în consolă
+- [x] cât mai multe `const` (unde este cazul) și funcții `private`
+  - toate interogările sunt `const` (`anchorOf`, `entitiesInRange`, `look`, `worldAt`...)
+  - sau sunt funcții private `WorldMap::requireRoom` / `occupy` / `vacate`, `Footprint::hasAnchor`, `Legend::glyphOf` / `padded`, `TorusGeometry::wrapAxis`
+- [x] implementarea a minim 3 funcții membru publice pentru funcționalități netriviale specifice temei alese, dintre care cel puțin 1-2 funcții mai complexe
+  - `WorldMap::moveTo` (verifică toate celulele noi înainte să schimbe ceva, inclusiv pentru amprente mari care se suprapun cu ele însele)
+  - `WorldMap::entitiesInRange` (cine "aude" un broadcast pe tor, fără duplicate pentru entitățile pe mai multe celule) și `WorldMap::freeCellsInRange`
+  - `TorusGeometry::area` / `shortestDelta` (distanțe și zone pe tor)
+  - `Legend::look` (ce se desenează după profil)
+  - `WorldMap::saveToFile`
+- [x] scenariu de utilizare **cu sens** a claselor definite:
+  - [`MapConsole`](app/MapConsole.cpp) rulează comenzile din [`tastatura.txt`](tastatura.txt): vulpea trece peste marginea hărții, aude iepurii ascunși în tufiș, mănâncă unul; starea se salvează, se restaurează și se exportă în JSON
   - crearea de obiecte și apelarea tuturor funcțiilor membru publice în main
   - vor fi adăugate în fișierul `tastatura.txt` DOAR exemple de date de intrare de la tastatură (dacă există) pentru a acoperi cât mai multe cazuri; dacă aveți nevoie de date din fișiere, creați alte fișiere separat
 - [ ] minim 52-60% din codul propriu să fie C++, adică să aveți mai mult cod decât ce e inclus în template; testele nu se pun, nu vă luați după procentajul din interfața web; detalii la ore
@@ -60,7 +49,8 @@ O cerință nu se consideră îndeplinită dacă este realizată doar prin cod g
 ## Tema 2
 
 #### Cerințe
-- [ ] separarea codului din clase în `.h` (sau `.hpp`) și `.cpp`
+- [x] separarea codului din clase în `.h` (sau `.hpp`) și `.cpp`
+  - câte o clasă per pereche `include/X.h` + `src/X.cpp`; citirea/scrierea JSON e separată în `src/WorldMapJson.cpp` și `src/LegendJson.cpp`
 - [ ] moșteniri:
   - minim o clasă de bază și **3 clase derivate** din aceeași ierarhie; cele 3 derivate moștenesc aceeași clasă de bază
   - ierarhia trebuie să fie cu bază proprie, nu derivată dintr-o clasă predefinită
@@ -73,14 +63,18 @@ O cerință nu se consideră îndeplinită dacă este realizată doar prin cod g
     - [ ] suprascris cc/op= pentru copieri/atribuiri corecte, copy and swap
     - [ ] `dynamic_cast`/`std::dynamic_pointer_cast` pentru downcast cu sens
     - [ ] smart pointers (recomandat, opțional)
-- [ ] excepții
-  - [ ] ierarhie proprie cu baza `std::exception` sau derivată din `std::exception`; minim **3** clase pentru erori specifice distincte
+- [x] excepții
+  - [x] ierarhie proprie cu baza `std::exception` sau derivată din `std::exception`; minim **3** clase pentru erori specifice distincte
+    - [`Errors.h`](include/Errors.h): `SimulationError` (derivată din `std::runtime_error`) cu `ConfigError`, `CellFullError`, `UnknownEntityError`, `DuplicateEntityError`, `StorageError`
     - clasele de excepții trebuie să trateze categorii de erori distincte (exemplu de erori echivalente: citire fișiere cu diverse extensii)
-  - [ ] utilizare cu sens: de exemplu, `throw` în constructor (sau funcție care întoarce un obiect), `try`/`catch` în `main`
+  - [x] utilizare cu sens: de exemplu, `throw` în constructor (sau funcție care întoarce un obiect), `try`/`catch` în `main`
+    - `throw` în constructorii `TorusGeometry`, `Footprint`, `LayerProfile`, `Legend`, `Viewport` și în `loadFromFile`; `catch` în [`main`](app/main.cpp) (oprire cu mesaj) și în `MapConsole::run` (comanda eșuează, harta rămâne neschimbată)
   - această ierarhie va fi complet independentă de ierarhia cu funcții virtuale
-- [ ] funcții și atribute `static`
-- [ ] STL
-- [ ] cât mai multe `const`
+- [x] funcții și atribute `static`
+  - atribute: `TorusGeometry::minSide`, `MapView::statusRows`; funcții: `WorldMap::loadFromFile`, `Legend::loadFromFile`, `EntityKinds::loadFromFile`, `TorusGeometry::offsetOf`
+- [x] STL
+  - `std::vector`, `std::array`, `std::map`, `std::unordered_map`, `std::optional`, `std::ranges::sort` / `unique` / `find`, `std::filesystem` (în teste)
+- [x] cât mai multe `const`
 - [ ] funcții *de nivel înalt*, de eliminat cât mai mulți getters/setters/funcții low-level
 - [ ] minim 75-78% din codul propriu să fie C++; testele nu se pun, nu vă luați după procentajul din interfața web
 - [ ] la sfârșit: commit separat cu adăugarea unei noi clase derivate fără a modifica restul codului, **pe lângă cele 3 derivate deja adăugate** din aceeași ierarhie
@@ -94,11 +88,61 @@ O cerință nu se consideră îndeplinită dacă este realizată doar prin cod g
 #### Cerințe
 - [ ] 2 șabloane de proiectare (design patterns)
 - [ ] o clasă șablon cu sens; minim **2 instanțieri**
-  - [ ] preferabil și o funcție șablon (template) cu sens; minim 2 instanțieri
+  - [x] preferabil și o funcție șablon (template) cu sens; minim 2 instanțieri
+    - `nameOf` / `valueOf` din [`MapTypes.cpp`](src/MapTypes.cpp), instanțiate pentru `Layer` și `Direction`
 - [ ] minim 80-90% din codul propriu să fie C++; testele nu se pun, nu vă luați după procentajul din interfața web
 <!-- - [ ] o specializare pe funcție/clasă șablon -->
 - [ ] tag de `git` pe commit cu **toate bifele**: de exemplu `v0.3` sau `v1.0`
 - [ ] code review #3 2 proiecte
+
+## Utilizare
+
+Programul pornește o consolă care citește comenzi (în CI, din `tastatura.txt`).
+Harta inițială vine din [`assets/map.json`](assets/map.json), iar simbolurile și culorile din [`assets/legend.json`](assets/legend.json).
+
+Hărți mai mari, de încărcat cu `importa`:
+
+| Fișier | Mărime | Ce conține |
+|---|---|---|
+| [`assets/padure.json`](assets/padure.json) | 48x24 | pâlcuri dese de tufișuri, iepuri ascunși în ele, vulpi în luminișuri |
+| [`assets/pajiste.json`](assets/pajiste.json) | 80x30 | câmpuri mari de iarbă, colonii de iepuri în jurul vizuinilor |
+| [`assets/arhipelag.json`](assets/arhipelag.json) | 120x40 | insule de iarbă, unele peste marginile torului; maxim 2 animale pe celulă |
+
+Exemplu: `importa assets/arhipelag.json`, apoi `fereastra 80 16`, `centreaza 2 35` și `arata`: insula din jurul celulei (2, 35) apare întreagă, deși trece peste marginea din stânga și peste cea de jos a hărții.
+
+| Comandă | Ce face |
+|---|---|
+| `harta`, `catalog`, `legenda` | afișează harta, tipul fiecărei entități, legenda |
+| `celula x y` | ce se află într-o celulă, pe fiecare strat |
+| `muta id x y`, `pas id DIR` | mută o entitate (DIR: `N NE E SE S SW W NW`); peste margine se intră pe partea cealaltă |
+| `distanta x1 y1 x2 y2`, `vecini x y 4\|8` | geometria torului |
+| `aude id raza`, `liber x y raza strat` | cine e în raza unei entități; unde mai e loc pe un strat |
+| `sterge id` | scoate o entitate de pe hartă |
+| `salveaza`, `restaureaza` | copie a hărții în memorie și revenire la ea |
+| `exporta fisier`, `importa fisier` | salvează / încarcă starea în JSON, în același format ca `assets/map.json` |
+| `arata`, `profil`, `centreaza x y`, `fereastra coloane randuri` | desenează harta; schimbă profilul de afișare și fereastra |
+| `interactiv [secunde]` | harta pe tot ecranul (ftxui) |
+| `stop` | ieșire |
+
+În modul interactiv: săgețile mută fereastra cu o celulă, `w a s d` cu patru celule, `Tab` schimbă profilul, `q` / `Esc` revine în consolă.
+
+Exemplu de fișier salvat cu `exporta`:
+
+```json
+{
+  "width": 20,
+  "height": 10,
+  "capacity": {"ground":1,"object":1,"animal":3},
+  "kinds": {
+    "bush": {"layer":"object","footprint":[[0,0],[1,0],[0,1],[1,1]]},
+    "rabbit": {"layer":"animal","footprint":[[0,0]]}
+  },
+  "entities": [
+    {"id":1,"kind":"bush","x":19,"y":9},
+    {"id":11,"kind":"rabbit","x":0,"y":0}
+  ]
+}
+```
 
 ## Instrucțiuni de compilare
 
@@ -162,16 +206,16 @@ conțin fișiere generate și nu ne ajută să le versionăm.
 
 Există mai multe variante:
 
-1. Din directorul de build (implicit `build`). Executabilul se află la locația `./build/oop_main` după ce a fost rulat pasul de compilare al proiectului (`./scripts/cmake.sh build` - pasul 2 de mai sus).
+1. Din directorul de build (implicit `build`). Executabilul se află la locația `./build/promiscuous_antenna_main` după ce a fost rulat pasul de compilare al proiectului (`./scripts/cmake.sh build` - pasul 2 de mai sus).
 
 ```sh
-./build/oop_main
+./build/promiscuous_antenna_main
 ```
 
-2. Din directorul `install_dir`. Executabilul se află la locația `./install_dir/bin/oop_main` după ce a fost rulat pasul de instalare (`./scripts/cmake.sh install` - pasul 4 de mai sus).
+2. Din directorul `install_dir`. Executabilul se află la locația `./install_dir/bin/promiscuous_antenna_main` după ce a fost rulat pasul de instalare (`./scripts/cmake.sh install` - pasul 4 de mai sus).
 
 ```sh
-./install_dir/bin/oop_main
+./install_dir/bin/promiscuous_antenna_main
 ```
 
 3. Rularea programului folosind Valgrind se poate face executând script-ul `./scripts/run_valgrind.sh` din rădăcina proiectului. Pe Windows acest script se poate rula folosind WSL (Windows Subsystem for Linux). Valgrind se poate rula în modul interactiv folosind: `RUN_INTERACTIVE=true ./scripts/run_valgrind.sh`
@@ -191,11 +235,11 @@ Valgrind rulează și testele.
 Comanda este aceeași ca la pasul 1 sau 2. Nu merge combinat cu Valgrind.
 
 ```sh
-./build/oop_main
-./build/oop_test
+./build/promiscuous_antenna_main
+./build/promiscuous_antenna_test
 # sau
-./install_dir/bin/oop_main
-./install_dir/bin/oop_test
+./install_dir/bin/promiscuous_antenna_main
+./install_dir/bin/promiscuous_antenna_test
 ```
 
 ## License
@@ -206,4 +250,7 @@ The [template repository](https://github.com/mcmarius/oop-template) itself is li
 
 ## Resurse
 
-- adăugați trimiteri **detaliate** către resursele externe care v-au ajutat sau pe care le-ați folosit
+- [nlohmann/json](https://github.com/nlohmann/json) v3.12.0, licență MIT — citirea hărții din `assets/map.json` (vendored în `ext/private/json/`)
+- FTXUI
+  <!-- renovate: datasource=github-tags depName=ArthurSonzogni/ftxui versioning=loose -->
+  - Versiune: [v7.0.3](https://github.com/ArthurSonzogni/ftxui/releases/tag/v7.0.3) (MIT) — afișarea hărții în terminal (`app/MapView`), adusă cu FetchContent
