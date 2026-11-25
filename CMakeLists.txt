@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.28)
 
 # NOTE: update EXECUTABLE_NAME in .github/workflows/cmake.yml when changing executable name in this file
 # for now, the project name is used as the executable name
-set(MAIN_PROJECT_NAME "oop")
+set(MAIN_PROJECT_NAME "promiscuous_antenna")
 set(MAIN_EXECUTABLE_NAME "${MAIN_PROJECT_NAME}_main")
 set(MAIN_LIBRARY_NAME "${MAIN_PROJECT_NAME}")
 set(TESTS_EXECUTABLE_NAME "${MAIN_PROJECT_NAME}_test")
@@ -31,10 +31,10 @@ include(cmake/RegisterTests.cmake)
 
 # External dependencies with FetchContent
 
-# include(FetchContent)
+include(FetchContent)
 #
-# set(FETCHCONTENT_QUIET OFF CACHE INTERNAL "Override verbose output" FORCE)
-# set(FETCHCONTENT_UPDATES_DISCONNECTED ON CACHE INTERNAL "Override update strategy" FORCE)
+set(FETCHCONTENT_QUIET OFF CACHE INTERNAL "Override verbose output" FORCE)
+set(FETCHCONTENT_UPDATES_DISCONNECTED ON CACHE INTERNAL "Override update strategy" FORCE)
 #
 # NOTE: Also update env vars used for caching in
 #     - .github/actions/configure-cmake/action.yml
@@ -50,11 +50,22 @@ include(cmake/RegisterTests.cmake)
 #
 # FetchContent_MakeAvailable(SomeLib)
 
+FetchContent_Declare(
+    ftxui
+    GIT_REPOSITORY https://github.com/ArthurSonzogni/ftxui.git
+    # renovate: datasource=github-tags depName=ArthurSonzogni/ftxui versioning=loose
+    GIT_TAG        v7.0.3 # <which tag/branch @ <some_date>>
+    GIT_SHALLOW    1  # works only with branches or tags, not with arbitrary commit hashes
+    GIT_PROGRESS   ON
+)
+
+FetchContent_MakeAvailable(ftxui)
+
 ###############################################################################
 
 # External dependencies with find_package
 
-# find_package(Threads REQUIRED)
+find_package(Threads REQUIRED)
 
 ###############################################################################
 
@@ -105,7 +116,7 @@ target_include_directories(${MAIN_LIBRARY_NAME} SYSTEM PRIVATE
 
 # Link libraries
 
-target_link_libraries(${MAIN_EXECUTABLE_NAME} PRIVATE ${MAIN_LIBRARY_NAME})
+target_link_libraries(${MAIN_EXECUTABLE_NAME} PRIVATE ${MAIN_LIBRARY_NAME} ftxui::screen ftxui::dom ftxui::component Threads::Threads)
 
 # target_link_directories(${MAIN_EXECUTABLE_NAME} PRIVATE ${<SomeLib>_BINARY_DIR}/lib)
 # target_link_libraries(${MAIN_EXECUTABLE_NAME} <SomeLib>)
