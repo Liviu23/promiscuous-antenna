@@ -36,5 +36,9 @@ importa lipsa.json
 zbor
 catalog
 arata
+importa assets/arhipelag.json
+fereastra 80 16
+centreaza 2 35
+arata
 interactiv 1
 stop
