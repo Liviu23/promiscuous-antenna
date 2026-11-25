@@ -30,8 +30,8 @@ Glyph Legend::padded(const Glyph& glyph, std::size_t count) const {
 	return glyph.withText(glyph.text() + suffix);
 }
 
-Glyph Legend::look(const Cell& cell, const EntityKinds& kinds, const LayerProfile& profile) const {
-	for (const Layer layer : profile.order()) {
+Glyph Legend::look(const Cell& cell, const EntityKinds& kinds, const LayerProfile& shown) const {
+	for (const Layer layer : shown.order()) {
 		const auto& ids = cell.occupants(layer);
 		// Aratam glyph-ul primului id chiar daca sunt tipuri diferite de entitati
 		if (!ids.empty()) return padded(glyphOf(ids.front(), kinds), ids.size());

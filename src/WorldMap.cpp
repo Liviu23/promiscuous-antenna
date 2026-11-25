@@ -94,8 +94,10 @@ Coord WorldMap::anchorOf(EntityId id) const { return placementOf(id).anchor; }
 std::vector<EntityId> WorldMap::entitiesInRange(const Coord& center, int radius, Metric metric) const {
 	std::vector<EntityId> found;
 	for (const Coord& coord : geometry_.area(center, radius, metric))
-		for (const Layer layer : {Layer::Ground, Layer::Object, Layer::Animal})
-			found.append_range(cellAt(coord).occupants(layer));
+		for (const Layer layer : {Layer::Ground, Layer::Object, Layer::Animal}) {
+			const auto& ids = cellAt(coord).occupants(layer);
+			found.insert(found.end(), ids.begin(), ids.end());
+		}
 
 	// o entitate pe mai multe celule apare o singură dată
 	std::ranges::sort(found);

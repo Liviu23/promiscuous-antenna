@@ -118,13 +118,13 @@ void MapConsole::distance(std::istringstream& args, std::ostream& out) const {
 }
 
 void MapConsole::neighbors(std::istringstream& args, std::ostream& out) const {
-	const Coord center = readCoord(args);
+	const Coord around = readCoord(args);
 	const auto count = read<int>(args, "4 sau 8");
 	if (count != 4 && count != 8) throw std::invalid_argument{"vecinatatea e 4 sau 8"};
 
 	const Neighborhood kind = count == 4 ? Neighborhood::VonNeumann : Neighborhood::Moore;
-	out << "  vecinii lui " << center << ':';
-	for (const Coord& neighbor : map_.geometry().neighbors(center, kind))
+	out << "  vecinii lui " << around << ':';
+	for (const Coord& neighbor : map_.geometry().neighbors(around, kind))
 		out << ' ' << neighbor;
 	out << '\n';
 }
@@ -139,11 +139,11 @@ void MapConsole::listen(std::istringstream& args, std::ostream& out) const {
 }
 
 void MapConsole::freeCells(std::istringstream& args, std::ostream& out) const {
-	const Coord center = readCoord(args);
+	const Coord around = readCoord(args);
 	const auto radius = read<int>(args, "raza");
 	const Layer layer = readLayer(args);
-	out << "  loc pe stratul " << layer << " in jurul lui " << center << ':';
-	for (const Coord& free : map_.freeCellsInRange(center, radius, listenMetric, layer))
+	out << "  loc pe stratul " << layer << " in jurul lui " << around << ':';
+	for (const Coord& free : map_.freeCellsInRange(around, radius, listenMetric, layer))
 		out << ' ' << free;
 	out << '\n';
 }

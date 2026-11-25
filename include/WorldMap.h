@@ -56,7 +56,7 @@ private:
 	struct Placement {
 		Footprint footprint;
 		Coord anchor;
-		Layer layer;
+		Layer layer{};
 	};
 	[[nodiscard]] static Placement constructPlacement(const Layer& layer, const Coord& anchor, const Footprint& footprint);
 

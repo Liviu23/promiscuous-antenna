@@ -37,7 +37,7 @@ std::vector<Coord> Footprint::cellsAt(const Coord& anchor, const TorusGeometry& 
 const std::vector<Coord>& Footprint::offsets() const { return offsets_; }
 
 std::ostream& operator<<(std::ostream& os, const Footprint& footprint) {
-	std::string padding[2] = { "", " "};
+	const std::string padding[2] = { "", " "};
 	os << '{';
 	for (std::size_t i = 0, pad = 0; i < footprint.offsets_.size(); ++i, pad = 1)
 		os << padding[pad] << footprint.offsets_[i];

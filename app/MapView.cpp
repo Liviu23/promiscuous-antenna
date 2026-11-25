@@ -90,7 +90,7 @@ ftxui::Element MapView::statusBar() const {
 
 std::string MapView::describe(const Cell& cell) const {
 	// pe scurt, cu tipurile din catalog, ca să încapă pe un rând: "animal 3/3: rabbit rabbit rabbit | ..."
-	std::string separators[2] = { "", " | " };
+	const std::string separators[2] = { "", " | " };
 	std::ostringstream text;
 	for (const Layer layer : {Layer::Animal, Layer::Object, Layer::Ground}) {
 		const auto& ids = cell.occupants(layer);

@@ -21,13 +21,14 @@
 
 namespace {
 	template <typename Error, typename Action>
-	bool throws(Action action) {
+	void expectThrows(Action action) {
+		bool thrown = false;
 		try {
 			action();
 		} catch (const Error&) {
-			return true;
+			thrown = true;
 		}
-		return false;
+		assert(thrown);
 	}
 
 	bool contains(const std::vector<Coord>& cells, const Coord& wanted) {
@@ -80,7 +81,7 @@ namespace {
 		const auto everything = geo.area({3, 3}, 100, Metric::Chebyshev);
 		assert(everything.size() == geo.cellCount() && distinct(everything) == geo.cellCount());
 
-		assert(throws<ConfigError>([] { (void) TorusGeometry{2, 10}; }));
+		expectThrows<ConfigError>([] { (void) TorusGeometry{2, 10}; });
 	}
 
 	void testFootprint() {
@@ -89,11 +90,11 @@ namespace {
 		const auto cells = square.cellsAt({3, 3}, geo);
 		assert(contains(cells, {3, 3}) && contains(cells, {0, 3}) && contains(cells, {3, 0}) && contains(cells, {0, 0}));
 
-		assert(throws<ConfigError>([] { (void) Footprint{{}}; }));
-		assert(throws<ConfigError>([] { (void) Footprint{{{1, 0}}}; }));
-		assert(throws<ConfigError>([] { (void) Footprint{{{0, 0}, {1, 0}, {1, 0}}}; }));
+		expectThrows<ConfigError>([] { (void) Footprint{{}}; });
+		expectThrows<ConfigError>([] { (void) Footprint{{{1, 0}}}; });
+		expectThrows<ConfigError>([] { (void) Footprint{{{0, 0}, {1, 0}, {1, 0}}}; });
 		// pe un tor de 4, deplasarea 4 cade peste ancoră
-		assert(throws<ConfigError>([&] { (void) Footprint{{{0, 0}, {4, 0}}}.cellsAt({0, 0}, geo); }));
+		expectThrows<ConfigError>([&] { (void) Footprint{{{0, 0}, {4, 0}}}.cellsAt({0, 0}, geo); });
 	}
 
 	void testCapacityAndAtomicity() {
@@ -104,11 +105,11 @@ namespace {
 		map.place(EntityId{3}, Layer::Object, {2, 2}, one);  // alt strat: coexistă cu animalele
 		assert(!map.cellAt({2, 2}).hasRoom(Layer::Animal));
 
-		assert(throws<CellFullError>([&] { map.place(EntityId{4}, Layer::Animal, {2, 2}, one); }));
-		assert(throws<DuplicateEntityError>([&] { map.place(EntityId{1}, Layer::Animal, {0, 0}, one); }));
+		expectThrows<CellFullError>([&] { map.place(EntityId{4}, Layer::Animal, {2, 2}, one); });
+		expectThrows<DuplicateEntityError>([&] { map.place(EntityId{1}, Layer::Animal, {0, 0}, one); });
 
 		map.place(EntityId{4}, Layer::Animal, {0, 0}, one);
-		assert(throws<CellFullError>([&] { map.moveTo(EntityId{4}, {2, 2}); }));
+		expectThrows<CellFullError>([&] { map.moveTo(EntityId{4}, {2, 2}); });
 		// mutarea eșuată nu a schimbat nimic
 		assert((map.anchorOf(EntityId{4}) == Coord{0, 0}));
 		assert(map.cellAt({0, 0}).occupants(Layer::Animal).size() == 1);
@@ -119,8 +120,8 @@ namespace {
 		assert((map.anchorOf(EntityId{4}) == Coord{2, 2}));
 		assert(map.cellAt({0, 0}).occupants(Layer::Animal).empty());
 
-		assert(throws<UnknownEntityError>([&] { map.remove(EntityId{1}); }));
-		assert(throws<UnknownEntityError>([&] { map.step(EntityId{1}, Direction::N); }));
+		expectThrows<UnknownEntityError>([&] { map.remove(EntityId{1}); });
+		expectThrows<UnknownEntityError>([&] { map.step(EntityId{1}, Direction::N); });
 	}
 
 	void testLargeFootprintMoves() {
@@ -134,7 +135,7 @@ namespace {
 		assert(map.cellAt({2, 1}).occupants(Layer::Object).size() == 1);
 
 		map.place(EntityId{2}, Layer::Object, {4, 0}, Footprint{{{0, 0}}});
-		assert(throws<CellFullError>([&] { map.moveTo(EntityId{1}, {3, 0}); }));
+		expectThrows<CellFullError>([&] { map.moveTo(EntityId{1}, {3, 0}); });
 		assert((map.anchorOf(EntityId{1}) == Coord{1, 0}));
 	}
 
@@ -194,7 +195,7 @@ namespace {
 		view.centerOn({0, 0});
 		assert((view.center() == Coord{0, 0}));
 
-		assert(throws<ConfigError>([&] { (void) Viewport{geo, 0}; }));
+		expectThrows<ConfigError>([&] { (void) Viewport{geo, 0}; });
 	}
 
 	Legend testLegend() {
@@ -214,7 +215,7 @@ namespace {
 		kinds.assign(EntityId{2}, "rabbit");
 		kinds.assign(EntityId{3}, "rabbit");
 		kinds.assign(EntityId{4}, "dragon");  // tip fără simbol în legendă
-		assert(throws<DuplicateEntityError>([&] { kinds.assign(EntityId{1}, "rabbit"); }));
+		expectThrows<DuplicateEntityError>([&] { kinds.assign(EntityId{1}, "rabbit"); });
 		assert(!kinds.kindOf(EntityId{99}));
 
 		WorldMap map{TorusGeometry{4, 4}, LayerCapacity{1, 1, 3}};
@@ -237,7 +238,7 @@ namespace {
 
 		assert(legend.profileCount() == 2);
 		assert(&legend.profile(2) == &legend.profile(0));  // indexul trece prin modulo
-		assert(throws<ConfigError>([] { (void) LayerProfile{"gol", {}}; }));
+		expectThrows<ConfigError>([] { (void) LayerProfile{"gol", {}}; });
 	}
 
 	std::string readAll(const std::filesystem::path& path) {
@@ -279,9 +280,9 @@ namespace {
 		EntityKinds incomplete;
 		incomplete.assign(EntityId{1}, "bush");
 		const auto unused = std::filesystem::temp_directory_path() / "promiscuous_antenna_test_unused.json";
-		assert(throws<StorageError>([&] { map.saveToFile(unused.string(), incomplete); }));
+		expectThrows<StorageError>([&] { map.saveToFile(unused.string(), incomplete); });
 		const auto missingFolder = std::filesystem::temp_directory_path() / "promiscuous_antenna_nu_exista" / "x.json";
-		assert(throws<StorageError>([&] { map.saveToFile(missingFolder.string(), kinds); }));
+		expectThrows<StorageError>([&] { map.saveToFile(missingFolder.string(), kinds); });
 	}
 } // namespace
 

@@ -27,7 +27,7 @@ void Cell::add(EntityId id, Layer layer) {
 void Cell::remove(EntityId id, Layer layer) { std::erase(occupants_[asIndex(layer)], id); }
 
 std::ostream& operator<<(std::ostream& os, const Cell& cell) {
-	std::string padding[2] = { "", " " };
+	const std::string padding[2] = { "", " " };
 
 	for (const Layer layer : {Layer::Ground, Layer::Object, Layer::Animal}) {
 		const auto& ids = cell.occupants(layer);

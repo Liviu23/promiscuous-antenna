@@ -12,7 +12,7 @@ std::uint8_t Glyph::red() const { return red_; }
 std::uint8_t Glyph::green() const { return green_; }
 std::uint8_t Glyph::blue() const { return blue_; }
 
-Glyph Glyph::withText(const std::string& text) const { return Glyph{text, red_, green_, blue_}; }
+Glyph Glyph::withText(const std::string& newText) const { return Glyph{newText, red_, green_, blue_}; }
 
 std::ostream& operator<<(std::ostream& os, const Glyph& glyph) {
 	const auto flags = os.flags();

@@ -15,7 +15,7 @@ public:
 	[[nodiscard]] std::uint8_t blue() const;
 
 	// Același simbol și aceeași culoare, cu alt text
-	[[nodiscard]] Glyph withText(const std::string& text) const;
+	[[nodiscard]] Glyph withText(const std::string& newText) const;
 
 	friend std::ostream& operator<<(std::ostream& os, const Glyph& glyph);
 

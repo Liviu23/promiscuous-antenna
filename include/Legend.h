@@ -26,7 +26,7 @@ public:
 
 	// Ce se vede într-o celulă, cu textul completat exact la cellWidth coloane.
 	// Simbolul primului ocupant de pe cel mai prioritar strat ocupat, plus câți sunt pe acel strat dacă sunt mai mulți.
-	[[nodiscard]] Glyph look(const Cell& cell, const EntityKinds& kinds, const LayerProfile& profile) const;
+	[[nodiscard]] Glyph look(const Cell& cell, const EntityKinds& kinds, const LayerProfile& shown) const;
 
 	friend std::ostream& operator<<(std::ostream& os, const Legend& legend);
 
