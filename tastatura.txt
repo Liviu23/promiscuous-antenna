@@ -1,2 +1,40 @@
-5
-11 22 33 44 55
+harta
+legenda
+arata
+profil
+arata
+profil
+arata
+profil
+fereastra 60 12
+centreaza 2 35
+arata
+celula 0 0
+celula 19 9
+distanta 19 5 0 5
+distanta 2 2 17 8
+vecini 0 0 8
+vecini 0 0 4
+pas 13 NW
+salveaza
+pas 20 W
+pas 20 W
+aude 20 4
+muta 13 0 0
+sterge 10
+muta 13 0 0
+celula 0 0
+liber 8 5 1 ground
+exporta salvare.json
+pas 99 N
+pas 13 X
+restaureaza
+harta
+importa salvare.json
+harta
+importa lipsa.json
+zbor
+catalog
+arata
+interactiv 1
+stop

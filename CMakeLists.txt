@@ -77,11 +77,11 @@ add_library(${MAIN_LIBRARY_NAME} STATIC)
 # NOTE: update EXECUTABLE_NAME in .github/workflows/cmake.yml when changing name here
 add_executable(${MAIN_EXECUTABLE_NAME}
     app/main.cpp
+    app/MapConsole.cpp
+    app/MapView.cpp
 )
 target_sources(${MAIN_LIBRARY_NAME}
     PRIVATE
-        src/Example.cpp
-        src/internal/Detail.cpp
         src/Cell.cpp
         src/Coord.cpp
         src/EntityKinds.cpp
