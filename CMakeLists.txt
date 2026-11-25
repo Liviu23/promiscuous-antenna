@@ -82,11 +82,16 @@ target_sources(${MAIN_LIBRARY_NAME}
     PRIVATE
         src/Example.cpp
         src/internal/Detail.cpp
+        src/Cell.cpp
         src/Coord.cpp
+        src/EntityKinds.cpp
         src/Errors.cpp
         src/Footprint.cpp
         src/MapTypes.cpp
         src/TorusGeometry.cpp
+        src/WorldMap.cpp
+        src/WorldMapJson.cpp
+        src/internal/JsonFile.cpp
 )
 
 # NOTE: Add all defined targets (e.g. executables, libraries, etc. )
