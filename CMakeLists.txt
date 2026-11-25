@@ -84,7 +84,9 @@ target_sources(${MAIN_LIBRARY_NAME}
         src/internal/Detail.cpp
         src/Coord.cpp
         src/Errors.cpp
+        src/Footprint.cpp
         src/MapTypes.cpp
+        src/TorusGeometry.cpp
 )
 
 # NOTE: Add all defined targets (e.g. executables, libraries, etc. )
