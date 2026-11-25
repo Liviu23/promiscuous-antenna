@@ -1,0 +1,17 @@
+{
+  "cellWidth": 2,
+  "empty":   { "symbol": ".", "color": "#3a3a3a" },
+  "unknown": { "symbol": "?", "color": "#ff00ff" },
+  "kinds": {
+    "grass":  { "symbol": "\"", "color": "#6abf4b" },
+    "bush":   { "symbol": "#", "color": "#2e7d32" },
+    "burrow": { "symbol": "o", "color": "#a1887f" },
+    "rabbit": { "symbol": "r", "color": "#eeeeee" },
+    "fox":    { "symbol": "F", "color": "#ff7043" }
+  },
+  "profiles": [
+    { "name": "normal",         "order": ["animal", "object", "ground"] },
+    { "name": "ce vede vulpea", "order": ["object", "animal", "ground"] },
+    { "name": "teren",          "order": ["ground", "object"] }
+  ]
+}

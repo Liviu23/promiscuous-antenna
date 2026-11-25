@@ -26,14 +26,16 @@ on:
 env:
   BUILD_TYPE: ${{ inputs.build_type || 'Debug' }}
   # NOTE: update EXECUTABLE_NAME/TESTS_EXECUTABLE_NAME if changed in CMakeLists.txt
-  EXECUTABLE_NAME: "oop_main"
-  TESTS_EXECUTABLE_NAME: "oop_test"
+  EXECUTABLE_NAME: "promiscuous_antenna_main"
+  TESTS_EXECUTABLE_NAME: "promiscuous_antenna_test"
   INPUT_FILENAME: "tastatura.txt"
   BIN_DIR: "bin"       # update in cmake/Options.cmake if changing name here
   INCLUDE_DIR: "include"
   LIB_DIR: "lib"
   BUILD_DIR: "build"
   EXT_DIR: "ext"
+  # renovate: datasource=github-tags depName=ArthurSonzogni/ftxui versioning=loose
+  FTXUI_VERSION: "v7.0.3"
 
 
 defaults:
@@ -150,7 +152,7 @@ jobs:
             # renovate: depName=macos
             name: "macOS 26 Apple Clang 21"
             # This env does not currently run address sanitizers
-            cmake_flags: "-DUSE_ASAN=OFF -DBUILD_SHARED_LIBS=ON"
+            cmake_flags: "-DUSE_ASAN=OFF -DBUILD_SHARED_LIBS=OFF"
             cmake_generator: Ninja
             runs_asan: false
             runs_tests: 'ON'

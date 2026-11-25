@@ -1,0 +1,26 @@
+{
+  "width": 20,
+  "height": 10,
+  "capacity": { "ground": 1, "object": 1, "animal": 3 },
+  "kinds": {
+    "grass":  { "layer": "ground", "footprint": [[0, 0]] },
+    "bush":   { "layer": "object", "footprint": [[0, 0], [1, 0], [0, 1], [1, 1]] },
+    "burrow": { "layer": "object", "footprint": [[0, 0]] },
+    "rabbit": { "layer": "animal", "footprint": [[0, 0]] },
+    "fox":    { "layer": "animal", "footprint": [[0, 0]] }
+  },
+  "entities": [
+    { "id": 1,  "kind": "bush",   "x": 19, "y": 9 },
+    { "id": 2,  "kind": "bush",   "x": 6,  "y": 3 },
+    { "id": 3,  "kind": "burrow", "x": 12, "y": 6 },
+    { "id": 10, "kind": "rabbit", "x": 0,  "y": 0 },
+    { "id": 11, "kind": "rabbit", "x": 0,  "y": 0 },
+    { "id": 12, "kind": "rabbit", "x": 0,  "y": 0 },
+    { "id": 13, "kind": "rabbit", "x": 7,  "y": 4 },
+    { "id": 20, "kind": "fox",    "x": 1,  "y": 4 },
+    { "id": 30, "kind": "grass",  "x": 5,  "y": 2 },
+    { "id": 31, "kind": "grass",  "x": 8,  "y": 5 },
+    { "id": 32, "kind": "grass",  "x": 9,  "y": 5 },
+    { "id": 33, "kind": "grass",  "x": 8,  "y": 6 }
+  ]
+}
